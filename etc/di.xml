@@ -16,4 +16,15 @@
         </arguments>
     </type>
 
+    <type name="Smile\ElasticsuiteCatalog\Model\Product\Indexer\Fulltext\Datasource\AttributeData">
+        <plugin name="buhmann_stock_smile_add_stock_status" type="Buhmann\StockStatusSmile\Plugin\AddStockStatusToIndex" sortOrder="10"/>
+    </type>
+
+    <type name="Smile\ElasticsuiteCore\Search\Request\ContainerConfiguration">
+        <plugin name="buhmann_stock_smile_add_aggregation" type="Buhmann\StockStatusSmile\Plugin\AddStockStatusAggregation" sortOrder="10"/>
+    </type>
+
+    <type name="Smile\ElasticsuiteCore\Api\Index\MappingInterface">
+        <plugin name="buhmann_stock_smile_fix_mapping" type="Buhmann\StockStatusSmile\Plugin\MappingCache" sortOrder="10"/>
+    </type>
 </config>
