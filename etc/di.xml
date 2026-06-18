@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+
+    <preference for="Buhmann\StockStatus\Api\ItemFactoryProviderInterface" type="Buhmann\StockStatusSmile\Model\Provider\ItemFactoryProvider"/>
+
+    <virtualType name="StockStatusSmileItemFactory" type="Magento\Catalog\Model\Layer\Filter\ItemFactory">
+        <arguments>
+            <argument name="instanceName" xsi:type="string">Buhmann\StockStatusSmile\Model\Layer\Filter\Item\Stock</argument>
+        </arguments>
+    </virtualType>
+
+    <type name="Buhmann\StockStatusSmile\Model\Provider\ItemFactoryProvider">
+        <arguments>
+            <argument name="itemFactory" xsi:type="object">StockStatusSmileItemFactory</argument>
+        </arguments>
+    </type>
+
+</config>
