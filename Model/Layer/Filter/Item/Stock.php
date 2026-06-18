@@ -19,6 +19,32 @@ use Smile\ElasticsuiteCatalog\Model\Layer\Filter\Item\Attribute;
 class Stock extends Attribute
 {
     /**
+     * Get URL for filter item
+     *
+     * For selected items, returns URL without the filter parameter (remove filter).
+     * For unselected items, returns URL with the filter parameter (apply filter).
+     *
+     * @return string
+     * @throws LocalizedException
+     */
+    public function getUrl()
+    {
+        $filter = $this->getFilter();
+        $requestVar = $filter->getRequestVar();
+
+        if ($this->getIsSelected()) {
+            $params = [
+                '_current' => true,
+                '_use_rewrite' => true,
+                '_query' => [$requestVar => null],
+            ];
+            return $this->_url->getUrl('*/*/*', $params);
+        }
+
+        return parent::getUrl();
+    }
+
+    /**
      * Check if the current item is selected
      *
      * @return bool
