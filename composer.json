@@ -6,7 +6,7 @@
     "license": "MIT",
     "require": {
         "php": "~8.1.0||~8.2.0||~8.3.0||~8.5.0",
-        "buhmann/module-stock-status": "^1.0",
+        "buhmann/module-stock-status": "^0.1.1",
         "smile/elasticsuite": "*"
     },
     "autoload": {
