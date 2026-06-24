@@ -7,6 +7,8 @@ declare(strict_types=1);
 
 namespace Buhmann\StockStatusSmile\Model\Layer\Filter\Item;
 
+use Buhmann\StockStatus\Model\Layer\Filter\Item\UrlTrait;
+use Buhmann\StockStatus\Model\Layer\Filter\Stock as FilterStock;
 use Magento\Framework\Exception\LocalizedException;
 use Smile\ElasticsuiteCatalog\Model\Layer\Filter\Item\Attribute;
 
@@ -18,6 +20,8 @@ use Smile\ElasticsuiteCatalog\Model\Layer\Filter\Item\Attribute;
  */
 class Stock extends Attribute
 {
+    use UrlTrait;
+
     /**
      * Get URL for filter item
      *
@@ -27,21 +31,54 @@ class Stock extends Attribute
      * @return string
      * @throws LocalizedException
      */
-    public function getUrl()
+    public function getUrl(): string
     {
+        /** @var FilterStock $filter */
         $filter = $this->getFilter();
         $requestVar = $filter->getRequestVar();
 
-        if ($this->getIsSelected()) {
-            $params = [
-                '_current' => true,
-                '_use_rewrite' => true,
-                '_query' => [$requestVar => null],
-            ];
-            return $this->_url->getUrl('*/*/*', $params);
+        if (!$filter->isMultiSelectEnabled()) {
+            if ($this->getIsSelected()) {
+                $params = [
+                    '_current' => true,
+                    '_use_rewrite' => true,
+                    '_query' => [$requestVar => null],
+                ];
+                return $this->_url->getUrl('*/*/*', $params);
+            }
+            return parent::getUrl();
         }
 
-        return parent::getUrl();
+        return $this->buildMultiSelectUrl(
+            $requestVar,
+            (int)$this->getValue(),
+            $filter->getSelectedValues() ?? []
+        );
+    }
+
+    /**
+     * Get remove URL for filter item
+     *
+     * Removes current value from selected values in multi-select mode.
+     *
+     * @return string
+     * @throws LocalizedException
+     */
+    public function getRemoveUrl(): string
+    {
+        /** @var FilterStock $filter */
+        $filter = $this->getFilter();
+        $requestVar = $filter->getRequestVar();
+
+        if (!$filter->isMultiSelectEnabled()) {
+            return parent::getRemoveUrl();
+        }
+
+        return $this->buildMultiSelectRemoveUrl(
+            $requestVar,
+            (int)$this->getValue(),
+            $filter->getSelectedValues() ?? []
+        );
     }
 
     /**
@@ -57,10 +94,15 @@ class Stock extends Attribute
 
         foreach ($filter->getLayer()->getState()->getFilters() as $stateFilter) {
             if ($stateFilter->getFilter()->getRequestVar() === $filter->getRequestVar()) {
-                $selectedValues[] = $stateFilter->getValue();
+                $value = $stateFilter->getValue();
+                if (is_array($value)) {
+                    $selectedValues = array_merge($selectedValues, $value);
+                } else {
+                    $selectedValues[] = (int)$value;
+                }
             }
         }
 
-        return in_array((string)$this->getValue(), $selectedValues, true);
+        return in_array((int)$this->getValue(), $selectedValues, true);
     }
 }

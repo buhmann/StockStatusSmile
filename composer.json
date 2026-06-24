@@ -1,0 +1,20 @@
+{
+    "name": "buhmann/module-stock-status-smile",
+    "description": "Smile ElasticSuite integration for Magento 2 Stock Status Module",
+    "type": "magento2-module",
+    "version": "0.1.0",
+    "license": "MIT",
+    "require": {
+        "php": "~8.1.0||~8.2.0||~8.3.0||~8.5.0",
+        "buhmann/module-stock-status": "^1.0",
+        "smile/elasticsuite": "*"
+    },
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Buhmann\\StockStatusSmile\\": ""
+        }
+    }
+}
