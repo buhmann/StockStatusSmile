@@ -7,7 +7,7 @@ declare(strict_types=1);
 
 namespace Buhmann\StockStatusSmile\Model\Layer\Filter\Item;
 
-use Buhmann\StockStatus\Model\Layer\Filter\Item\UrlTrait;
+use Buhmann\StockStatus\Model\Layer\Filter\Item\StockTrait;
 use Buhmann\StockStatus\Model\Layer\Filter\Stock as FilterStock;
 use Magento\Framework\Exception\LocalizedException;
 use Smile\ElasticsuiteCatalog\Model\Layer\Filter\Item\Attribute;
@@ -20,7 +20,7 @@ use Smile\ElasticsuiteCatalog\Model\Layer\Filter\Item\Attribute;
  */
 class Stock extends Attribute
 {
-    use UrlTrait;
+    use StockTrait;
 
     /**
      * Get URL for filter item
@@ -79,30 +79,5 @@ class Stock extends Attribute
             (int)$this->getValue(),
             $filter->getSelectedValues() ?? []
         );
-    }
-
-    /**
-     * Check if the current item is selected
-     *
-     * @return bool
-     * @throws LocalizedException
-     */
-    public function getIsSelected(): bool
-    {
-        $filter = $this->getFilter();
-        $selectedValues = [];
-
-        foreach ($filter->getLayer()->getState()->getFilters() as $stateFilter) {
-            if ($stateFilter->getFilter()->getRequestVar() === $filter->getRequestVar()) {
-                $value = $stateFilter->getValue();
-                if (is_array($value)) {
-                    $selectedValues = array_merge($selectedValues, $value);
-                } else {
-                    $selectedValues[] = (int)$value;
-                }
-            }
-        }
-
-        return in_array((int)$this->getValue(), $selectedValues, true);
     }
 }
